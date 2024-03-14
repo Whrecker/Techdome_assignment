@@ -1,0 +1,75 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+            margin: 0;
+            padding: 0;
+        }
+        center {
+            margin-top: 100px;
+        }
+        form {
+            background-color: #fff;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+        label {
+            font-weight: bold;
+        }
+        input[type="radio"] {
+            margin-right: 5px;
+        }
+        input[type="submit"] {
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 10px;
+        }
+        #empty {
+            color: red;
+            margin-top: 10px;
+        }
+    </style>
+</head>
+<body>
+    <center>
+        <form action="" method="POST" id="choose">
+            {% csrf_token %}
+            <label id="choice">Choose</label><br>
+            Admin: <input type="radio" name="role" id="Admin"><br>
+            Customer: <input type="radio" name="role" id="Customer"><br>
+            <input hidden type="text" id="hid" name="selected">
+            <input type="submit" name="sub" id="sub">
+            <p id="empty"></p>
+        </form>
+    </center>
+
+    <script>
+        document.addEventListener("DOMContentLoaded", function() {
+            document.querySelector('#choose').addEventListener('submit', function(event) {
+                event.preventDefault();
+                let adm = document.getElementById("Admin").checked;
+                let cust = document.getElementById("Customer").checked;
+                if (!adm && !cust) {
+                    document.getElementById("empty").innerHTML = "Please select one";
+                } else if (adm) {
+                    document.getElementById("hid").value = "Admin";
+                } else {
+                    document.getElementById("hid").value = "Customer";
+                }
+                document.getElementById("choose").submit();
+            });
+        });
+    </script>
+</body>
+</html>

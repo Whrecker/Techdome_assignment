@@ -1,0 +1,94 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background-color: #f2f2f2;
+        }
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 8px;
+            text-align: left;
+        }
+        th {
+            background-color: #4CAF50;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        tr:hover {
+            background-color: #ddd;
+        }
+        .removeButton {
+            cursor: pointer;
+        }
+    </style>
+</head>
+<body>
+    <table id="loanTable">
+        <thead>
+            <tr>
+                <th>Username</th>
+                <th>Loan Taken</th>
+                <th>Loan Remaining</th>
+                <th>Repayment Time</th>
+                <th>Loan Status</th>
+                <th>Loan term</th>
+                <th>approve</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for customer in data %}
+            <tr id="row_{{ customer.ids }}">
+                <td>{{ customer.username }}</td>
+                <td>{{ customer.loan_taken }}</td>
+                <td>{{ customer.loan_remaining }}</td>
+                <td>{{ customer.repayment_time }}</td>
+                <td>{{ customer.loan_status }}</td>
+                <td>{{ cutomer.loan_term }}</td>
+                <td><input type="radio" name="approved" class="approveItem" data-id="{{ customer.ids }}"></td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+    <script>
+$(document).ready(function() {
+    $(document).on('click', '.approveItem', function() {
+        var rowId = $(this).data('id');
+        console.log(rowId);
+        var confirmation = confirm("Are you sure you want to approve this loan?");
+        if (confirmation) {
+            $.ajax({
+                type: 'POST',
+                url: '{% url 'approve' %}',
+                data: {'approved': rowId, 'csrfmiddlewaretoken': '{{ csrf_token }}'},
+                success: function(response) {
+                    // handle success
+                    alert(response.message);
+                },
+                error: function(xhr, textStatus, errorThrown) {
+                    // handle error
+                    console.error('Error:', errorThrown);
+                }
+            });
+        }
+    });
+});
+
+    </script>
+</body>
+</html>

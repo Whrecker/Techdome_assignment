@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Loans</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f2f2f2;
+        }
+        center {
+            margin-top: 100px;
+        }
+        input[type="radio"] {
+            margin-right: 5px;
+        }
+        button {
+            margin-top: 10px;
+            padding: 8px 20px;
+            background-color: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+        }
+        form {
+            margin-top: 20px;
+        }
+        form input[type="number"],
+        form input[type="submit"] {
+            margin-top: 10px;
+            padding: 5px;
+            width: 200px;
+        }
+    </style>
+</head>
+<body>
+    <center>
+        <label for="new">Take a new loan:</label>
+        <input type="radio" name="loan_type" id="new"><br>
+        <button onclick="toggleLoanForm()">Click Here</button><br>
+        <div id="take_loan_form" style="display:none;">
+            <form action="" method="POST" id="form_take_loan">
+                {% csrf_token %}
+                Enter loan amount:
+                <input type="number" name="amount" id="amount"><br>
+                Enter loan_term:
+                <input type="number" name="term" id="term"><br>
+                <input type="submit" name="submit_take_loan" value="Take Loan">
+            </form>
+        </div>
+        <label for="exist">Look at existing loan:</label>
+        <input type="radio" name="loan_type" id="exist"><br>
+        <button onclick="toggleExistingLoan()">Click Here</button>
+        <div id="show_loan" style="display:none;">
+            <p id="loan_remaining">{{repayment_time}}</p>
+            <p id="loan_term">{{loan_term}}</p>
+            <p id="repayment_time"></p>
+            <form action="" method="POST" id="form_pay_loan">
+                {% csrf_token %}
+                Make payment:
+                <input type="number" name="payment_amount" id="payment_amount"><br>
+                <input type="submit" name="submit_pay_loan" value="Pay Loan">
+            </form>
+        </div>
+    </center>
+    <script>
+        function toggleLoanForm() {
+            let newLoanChecked = document.getElementById("new").checked;
+            let loanForm = document.getElementById("take_loan_form");
+            loanForm.style.display = newLoanChecked ? "block" : "none";
+        }
+        
+        function toggleExistingLoan() {
+            let existingLoanChecked = document.getElementById("exist").checked;
+            let existingLoanInfo = document.getElementById("show_loan");
+            existingLoanInfo.style.display = existingLoanChecked ? "block" : "none";
+        }
+        
+        let loanRemaining = {{ loan_remaining }};
+        document.getElementById("loan_remaining").innerHTML = "Loan Remaining: " + loanRemaining;
+
+        document.addEventListener("submit", function(event) {
+            event.preventDefault();
+            document.getElementById("form_take_loan").submit();
+            document.getElementById("form_pay_loan").submit();
+        });
+    </script>
+</body>
+</html>
